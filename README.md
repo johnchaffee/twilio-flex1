@@ -1,3 +1,24 @@
+# Flex
+
+## CRM Container
+
+This is a sample Flex CRM Integration. It pulls contact data from an Airtable database routed through Twilio Functions.
+
+This 
+
+```js
+// /src/samplePlugin.js
+
+// CRMContainer -> twilio-functions-airtable-crm
+flex.CRMContainer.defaultProps.uriCallback = (task) => {
+  return task
+    ? `https://twilio-functions-airtable-crm-9306-dev.twil.io/view.html?table=contacts&field=phone&value=${task.attributes.name}`
+    : "https://twilio-functions-airtable-crm-9306-dev.twil.io/index.html"
+}
+```
+
+The `task.attributes.name` property is the phone number that is passed to Airtable to look up the contact by phone number.
+
 # Your custom Twilio Flex Plugin
 
 Twilio Flex Plugins allow you to customize the appearance and behavior of [Twilio Flex](https://www.twilio.com/flex). If you want to learn more about the capabilities and how to use the API, check out our [Flex documentation](https://www.twilio.com/docs/flex).

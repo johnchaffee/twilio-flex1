@@ -1,15 +1,15 @@
-import React from 'react';
-import { VERSION } from '@twilio/flex-ui';
-import { FlexPlugin } from '@twilio/flex-plugin';
+import React from "react"
+import { VERSION } from "@twilio/flex-ui"
+import { FlexPlugin } from "@twilio/flex-plugin"
 
-import CustomTaskListContainer from './components/CustomTaskList/CustomTaskList.Container';
-import reducers, { namespace } from './states';
+import CustomTaskListContainer from "./components/CustomTaskList/CustomTaskList.Container"
+import reducers, { namespace } from "./states"
 
-const PLUGIN_NAME = 'SamplePlugin';
+const PLUGIN_NAME = "SamplePlugin"
 
 export default class SamplePlugin extends FlexPlugin {
   constructor() {
-    super(PLUGIN_NAME);
+    super(PLUGIN_NAME)
   }
 
   /**
@@ -20,10 +20,20 @@ export default class SamplePlugin extends FlexPlugin {
    * @param manager { import('@twilio/flex-ui').Manager }
    */
   async init(flex, manager) {
-    this.registerReducers(manager);
+    this.registerReducers(manager)
 
-    const options = { sortOrder: -1 };
-    flex.AgentDesktopView.Panel1.Content.add(<CustomTaskListContainer key="SamplePlugin-component" />, options);
+    const options = { sortOrder: -1 }
+    flex.AgentDesktopView.Panel1.Content.add(
+      <CustomTaskListContainer key="SamplePlugin-component" />,
+      options
+    )
+
+    // CRMContainer -> twilio-functions-airtable-crm
+    flex.CRMContainer.defaultProps.uriCallback = (task) => {
+      return task
+        ? `https://twilio-functions-airtable-crm-9306-dev.twil.io/view.html?table=contacts&field=phone&value=${task.attributes.name}`
+        : "https://twilio-functions-airtable-crm-9306-dev.twil.io/index.html"
+    }
   }
 
   /**
@@ -34,10 +44,12 @@ export default class SamplePlugin extends FlexPlugin {
   registerReducers(manager) {
     if (!manager.store.addReducer) {
       // eslint-disable-next-line
-      console.error(`You need FlexUI > 1.9.0 to use built-in redux; you are currently on ${VERSION}`);
-      return;
+      console.error(
+        `You need FlexUI > 1.9.0 to use built-in redux; you are currently on ${VERSION}`
+      )
+      return
     }
 
-    manager.store.addReducer(namespace, reducers);
+    manager.store.addReducer(namespace, reducers)
   }
 }
