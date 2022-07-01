@@ -21,6 +21,7 @@ export default class SamplePlugin extends FlexPlugin {
    */
   async init(flex, manager) {
     this.registerReducers(manager)
+    console.log("ASYNC INIT")
 
     const options = { sortOrder: -1 }
     flex.AgentDesktopView.Panel1.Content.add(
@@ -30,9 +31,21 @@ export default class SamplePlugin extends FlexPlugin {
 
     // CRMContainer -> twilio-functions-airtable-crm
     flex.CRMContainer.defaultProps.uriCallback = (task) => {
+      let phoneNumber = "+12063996576"
+      console.log("LET PHONE NUMBER:", phoneNumber)
+      /**
+       * If the channelType is web, there will not be a phone number in the name attribute
+       * so use the default phoneNumber. Otherwise, the sms and voice channel types will include
+       * a phone number in the name attribute, so use it for the phone value
+       */
+      if (task && task.attributes.channelType != "web") {
+        console.log("TASK:", task)
+        phoneNumber = task.attributes.name
+        console.log("PHONE NUMBER:", phoneNumber)
+      }
       return task
-        ? `https://twilio-functions-airtable-crm-9306-dev.twil.io/view.html?table=contacts&field=phone&value=${task.attributes.name}`
-        : "https://twilio-functions-airtable-crm-9306-dev.twil.io/index.html"
+        ? `https://twilio-functions-airtable-crm-8659-dev.twil.io/view.html?table=contacts&field=phone&value=${phoneNumber}`
+        : "https://twilio-functions-airtable-crm-8659-dev.twil.io/index.html"
     }
   }
 
